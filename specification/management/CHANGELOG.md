@@ -13,3 +13,8 @@ Rollback: retain approved snapshots in Git and tag them after team approval. No 
 - Updated US-02, US-04, US-05, US-06 and HLR-03, HLR-05, HLR-06, HLR-07, HLR-09, HLR-11.
 - Retained stable IDs. Previous draft 0.1 remains unchanged for snapshot rollback.
 - No lower-level requirements created.
+
+## 0.2.0 — Approved HLR baseline
+- Team selected option B for OQ-07 and approved all 11 HLRs without further objections.
+- Updated US-04, HLR-05 and its verification intent; OQ-08 remains deferred.
+- No FR/NFR or lower-level requirements created.
