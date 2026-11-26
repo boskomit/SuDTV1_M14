@@ -18,3 +18,9 @@ Rollback: retain approved snapshots in Git and tag them after team approval. No 
 - Team selected option B for OQ-07 and approved all 11 HLRs without further objections.
 - Updated US-04, HLR-05 and its verification intent; OQ-08 remains deferred.
 - No FR/NFR or lower-level requirements created.
+
+## 0.3.0-dev.1 — Complete FR draft
+- Applied FR pilot feedback and resolved OQ-09 through OQ-16 at functional level.
+- Decomposed all 11 HLRs into 62 proposed FRs; retained original pilot IDs FR-05.01–05.05.
+- Recorded remaining functional questions OQ-17–OQ-35 and retained OQ-08.
+- No HLR wording changed; no NFR, TR, design or test cases authored.
