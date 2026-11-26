@@ -10,117 +10,56 @@ Deferred to later phases: archive limits, quality defaults, precise continuity t
 ## FR pilot questions — resolved
 OQ-09–OQ-16: see D-16–D-23 in Decision Log. OQ-13 numerical tolerance deferred to NFR. OQ-12 boundary edge cases remain in OQ-28.
 
-## FR review — open questions
-### OQ-17 — Catalogue lifecycle
+## FR review — decisions and remaining questions
 
-When is the catalogue loaded or refreshed, and should successfully retrieved changes remove services no longer listed?
+- OQ-17 (Partial): Catalogue refresh at startup and every 24 h; EPG at startup and 6–12 h intervals. Removal/manual refresh and exact EPG cadence/scope remain open.
+- OQ-18 (Resolved): Retain last valid data with stale/unavailable indication; empty/error state if absent; retry.
+- OQ-19 (Resolved): Ascending channel number, wrap at boundaries, Enter confirms; invalid number is silently ignored.
+- OQ-20 (Resolved at FR level): Latest valid selection wins; minimum interval required between channel activation initiations; interval in NFR and rate-limit handling open.
+- OQ-21 (Resolved): First available service at initial startup; info displays number/name/current programme if available; automatic/manual dismissal.
+- OQ-22 (Open): Team requested explanation of coverage window; proposed past 24 h and future 24 h, programme title/start/end, empty state; awaiting approval.
+- OQ-23 (Resolved): Volume/mute retained across playback operations; persistence across restarts not required.
+- OQ-24 (Partial): Exactly two quality variants; preserve quality when available; defined default remains to be selected.
+- OQ-25 (Resolved): Selection initiates change without further confirmation; same quality no-op; retain/restore prior playback if feasible; otherwise error and Go Live.
+- OQ-26 (Resolved): LIVE in live mode; negative HH:MM:SS delay in rewind mode; ordinary live latency not displayed; Go Live preserves quality.
+- OQ-27 (Resolved): Zap and Go Live supersede rewind/quality; block rewind/quality during pending transitions; Go Live not applicable during zap; obsolete completions ignored.
+- OQ-28 (Resolved): Clamp if earlier playable content exists; otherwise no additional rewind; retain playback if possible; brief nonblocking notice.
+- OQ-29 (Partial): Cyclic scheduled playlist approved; repeat after final programme with continuous broadcast timeline. Historical retention open.
+- OQ-30 (Resolved): One receiver sufficient; terminate obsolete deliveries.
+- OQ-31 (Resolved): SPTS demonstration; PAT parser exposes all program mappings; MPTS playback not required.
+- OQ-32 (Partial): Instructor confirmed parser-driven playback unnecessary. Independently inspectable correct results used or retained for verification; continuous table updates open.
+- OQ-33 (Resolved): Retain/restore prior playback where feasible; otherwise unavailable, error and retry/service selection. Timeout in NFR.
+- OQ-34 (Resolved as constraint): All M14 functions remain mandatory; OQ-08 feasibility remains deferred.
+- OQ-35 (Partial): Arrows channel/volume, Enter confirmation, Backspace adds 30-second rewind step, digits select services, Space Go Live. Remaining mapping pending.
 
-**Proposed answer (not approved):** Load at startup; support explicit refresh; reconcile additions, changes and removals only after a valid complete response.
+## Remaining functional clarifications
 
-### OQ-18 — Metadata failure
+### OQ-36 — Catalogue reconciliation
 
-On catalogue or guide retrieval failure, should previously retrieved data remain visible?
+Should a valid complete catalogue remove absent services, and is manual refresh required? Proposed: reconcile removals after valid complete response; manual refresh optional, not required.
 
-**Proposed answer (not approved):** Keep last valid data with an unavailable/stale indication; if no valid data exists show an empty/error state; retry available.
+### OQ-37 — Channel rate limiting
 
-### OQ-19 — Channel ordering and invalid input
+Keep latest valid selection during the minimum interval and initiate it when interval expires, rather than dropping the last selection? Proposed: yes; exact interval in NFR.
 
-What is the order, boundary behavior, and confirmation rule for direct numeric entry?
+### OQ-38 — EPG cadence and retrieval scope
 
-**Proposed answer (not approved):** Ascending channel number; wrap at ends; Enter confirms; invalid number leaves playback unchanged and shows an error.
+Choose an interval within 6–12 h (proposed 6 h). Refresh selected-service EPG on startup, channel selection when missing/stale, and periodically; no requirement to prefetch every channel. Confirm coverage proposal in OQ-22.
 
-### OQ-20 — Rapid channel changes
+### OQ-39 — Complete keyboard mapping
 
-Should a newer channel selection supersede pending activation?
+Proposed normal viewing: Up/Down next/previous, Right/Left volume up/down; Enter confirm, Backspace adds rewind step/open selection, digits enter channel, Space Go Live, M mute, G guide, Q quality, L list, I info, Esc cancel/close. In dialogs arrows navigate; in rewind selection Left adds 30 s, Right subtracts 30 s, Backspace adds 30 s, Enter confirms, Esc cancels. Confirm dialog focus and Space global versus normal-viewing only.
 
-**Proposed answer (not approved):** Latest valid selection wins; obsolete completion ignored.
+### OQ-40 — Default quality
 
-### OQ-21 — Startup and service information
+Proposed High at initial startup, retain selected quality when available; Low fallback if High unavailable. Confirm labels High/Low and default.
 
-What is selected at startup; which fields and visibility duration are required in the info dialog?
+### OQ-41 — Historical retention
 
-**Proposed answer (not approved):** First available service on initial startup; channel number, service name and current programme if available; automatic dismissal with manual close.
+Proposed all simulated history since server start, with no additional retention cap for demonstration; do not allow pre-start content as already broadcast. Confirm or specify rolling window.
 
-### OQ-22 — EPG scope and empty schedule
+### OQ-42 — Continuous PAT/PMT changes
 
-Which schedule fields, time range and empty state are needed?
+Proposed parse on every new stream; continuous table-version monitoring is not required for stable demonstration SPTS. Confirm.
 
-**Proposed answer (not approved):** Title and start/end times; display all records supplied for selected service within server-provided range; indicate no schedule when none is available.
-
-### OQ-23 — Audio persistence
-
-Should volume and mute persist across service, rewind and quality changes?
-
-**Proposed answer (not approved):** Retain settings across playback changes; no persistence across app restarts unless requested.
-
-### OQ-24 — Quality catalogue and default
-
-How many variants, labels and default selection? Is quality global or per service?
-
-**Proposed answer (not approved):** At least two manually selectable variants; retain current quality across operations when available; choose a documented default otherwise. Exact labels and encoding deferred.
-
-### OQ-25 — Quality switching semantics
-
-Should selecting quality immediately request it or require confirmation? What happens on same-quality selection and failure?
-
-**Proposed answer (not approved):** Explicit selection activates change; same active quality is a no-op; retain or restore previous quality/position if feasible, otherwise report error with Go Live recovery.
-
-### OQ-26 — Live position semantics
-
-Should Go Live preserve quality, and what is shown for ordinary live latency? How often should indicator update?
-
-**Proposed answer (not approved):** Preserve active quality; show zero or LIVE for live mode and actual delay for delayed mode; update during playback, exact precision/cadence in NFR. Clarify whether physical live latency counts.
-
-### OQ-27 — Cross-operation conflicts
-
-What happens when Go Live, zap or quality change arrives while rewind or quality switch is pending?
-
-**Proposed answer (not approved):** Zap and Go Live supersede pending playback operations; block other rewind/quality confirmations while pending. Keep latest valid command semantics and ignore obsolete results.
-
-### OQ-28 — Rewind boundary and failure
-
-If already at earliest content or no historical content exists, what should happen? Should clamping be communicated?
-
-**Proposed answer (not approved):** Clamp when earlier playable content exists; show an informative notice; if no earlier playable content exists, retain playback if possible and explain. Do not falsely claim success.
-
-### OQ-29 — Simulated live lifecycle
-
-Should simulated broadcast loop, stop at media end, or follow a scheduled sequence? How much history is retained?
-
-**Proposed answer (not approved):** Common server timeline independent of receiver; choose explicit end-of-content behavior and retention before baseline. Do not assume infinite history.
-
-### OQ-30 — Server delivery scope
-
-Is one receiver/session enough for demonstration or must concurrent independent clients be supported? Should old delivery stop on switch/release?
-
-**Proposed answer (not approved):** One independently controlled receiver is sufficient for required demonstration; stop obsolete delivery. Multiple-client scalability is not assumed.
-
-### OQ-31 — Transport program scope
-
-Will each stream contain one program (SPTS) or must multiple programs be supported (MPTS)? How is selected service associated with program?
-
-**Proposed answer (not approved):** SPTS for demonstration, with parser able to expose PAT program mappings; explicit service-to-program association if MPTS is required.
-
-### OQ-32 — PAT/PMT change behavior
-
-Must receiver handle table updates during uninterrupted playback as well as on new streams? Must parsed PIDs drive playback configuration or is independent verification plus availability to control logic sufficient?
-
-**Proposed answer (not approved):** Require correct independent parsing and use of results in service validation; dynamic table changes and player integration scope need team confirmation.
-
-### OQ-33 — Failure and timeout semantics
-
-On failed zap, lost stream or malformed TS, should previous playback remain/restore or show unavailable state? Should retry be offered?
-
-**Proposed answer (not approved):** Do not mark unsuccessful request as active; preserve valid prior playback where feasible, otherwise show unavailable state and offer recovery. Timeout thresholds in NFR.
-
-### OQ-34 — TIF feasibility
-
-Can preferred system Live TV application support confirmed rewind, quality UI, selected-service EPG and error actions?
-
-**Proposed answer (not approved):** Keep OQ-08 deferred to explicit feasibility verification; do not silently weaken requirements or assume a custom UI is approved.
-
-### OQ-35 — Keyboard and dialogs
-
-Should exact key mapping and dialog close behavior be agreed at FR level?
-
-**Proposed answer (not approved):** Define user-facing mapping for required actions in FR once approved; implementation event handling remains TR. No mouse dependency.
+OQ-22 coverage and EPG fields still require approval. OQ-08 feasibility remains deferred. No NFR thresholds beyond team-provided refresh intervals are established.

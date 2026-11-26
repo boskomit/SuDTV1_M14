@@ -27,3 +27,24 @@
 - D-22 (OQ-15): No second rewind confirmation while prior rewind is pending.
 - D-23 (OQ-16): Rewind preserves active quality.
 - D-24: Team authorized a complete FR draft, not a final FR baseline. NFR and TR remain unauthored.
+
+## FR review feedback — 0.3.0-dev.2
+- D-25 (OQ-17; Partial): Catalogue refresh at startup and every 24 h; EPG at startup and 6–12 h intervals. Removal/manual refresh and exact EPG cadence/scope remain open.
+- D-26 (OQ-18; Resolved): Retain last valid data with stale/unavailable indication; empty/error state if absent; retry.
+- D-27 (OQ-19; Resolved): Ascending channel number, wrap at boundaries, Enter confirms; invalid number is silently ignored.
+- D-28 (OQ-20; Resolved at FR level): Latest valid selection wins; minimum interval required between channel activation initiations; interval in NFR and rate-limit handling open.
+- D-29 (OQ-21; Resolved): First available service at initial startup; info displays number/name/current programme if available; automatic/manual dismissal.
+- D-30 (OQ-22; Open): Team requested explanation of coverage window; proposed past 24 h and future 24 h, programme title/start/end, empty state; awaiting approval.
+- D-31 (OQ-23; Resolved): Volume/mute retained across playback operations; persistence across restarts not required.
+- D-32 (OQ-24; Partial): Exactly two quality variants; preserve quality when available; defined default remains to be selected.
+- D-33 (OQ-25; Resolved): Selection initiates change without further confirmation; same quality no-op; retain/restore prior playback if feasible; otherwise error and Go Live.
+- D-34 (OQ-26; Resolved): LIVE in live mode; negative HH:MM:SS delay in rewind mode; ordinary live latency not displayed; Go Live preserves quality.
+- D-35 (OQ-27; Resolved): Zap and Go Live supersede rewind/quality; block rewind/quality during pending transitions; Go Live not applicable during zap; obsolete completions ignored.
+- D-36 (OQ-28; Resolved): Clamp if earlier playable content exists; otherwise no additional rewind; retain playback if possible; brief nonblocking notice.
+- D-37 (OQ-29; Partial): Cyclic scheduled playlist approved; repeat after final programme with continuous broadcast timeline. Historical retention open.
+- D-38 (OQ-30; Resolved): One receiver sufficient; terminate obsolete deliveries.
+- D-39 (OQ-31; Resolved): SPTS demonstration; PAT parser exposes all program mappings; MPTS playback not required.
+- D-40 (OQ-32; Partial): Instructor confirmed parser-driven playback unnecessary. Independently inspectable correct results used or retained for verification; continuous table updates open.
+- D-41 (OQ-33; Resolved): Retain/restore prior playback where feasible; otherwise unavailable, error and retry/service selection. Timeout in NFR.
+- D-42 (OQ-34; Resolved as constraint): All M14 functions remain mandatory; OQ-08 feasibility remains deferred.
+- D-43 (OQ-35; Partial): Arrows channel/volume, Enter confirmation, Backspace adds 30-second rewind step, digits select services, Space Go Live. Remaining mapping pending.

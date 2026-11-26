@@ -24,3 +24,8 @@ Rollback: retain approved snapshots in Git and tag them after team approval. No 
 - Decomposed all 11 HLRs into 62 proposed FRs; retained original pilot IDs FR-05.01–05.05.
 - Recorded remaining functional questions OQ-17–OQ-35 and retained OQ-08.
 - No HLR wording changed; no NFR, TR, design or test cases authored.
+
+## 0.3.0-dev.2 — FR review revision
+- Incorporated team answers OQ-17–OQ-35, including cyclic scheduled broadcasting, keyboard mapping subset, refresh intervals and independent parser evidence.
+- Expanded to 75 draft FRs with stable existing IDs; remaining ambiguities recorded as OQ-22 and OQ-36–OQ-42.
+- No NFR or TR authored; HLR baseline unchanged.

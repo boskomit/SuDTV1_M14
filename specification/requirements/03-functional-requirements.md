@@ -1,6 +1,6 @@
-# Functional Requirements — Draft 0.3.0-dev.1
+# Functional Requirements — Draft 0.3.0-dev.2
 
-Status: **Proposed — team review required**. Parent: approved HLR baseline v0.2.0. All statements in this document are draft requirements; entries explicitly marked Proposed introduce behavior needing additional approval. No acceptance criterion contains illustrative examples. No related-requirements field is used.
+Status: **Proposed — team review required**. Parent: approved HLR baseline v0.2.0. All statements in this document are draft requirements; entries marked Proposed or Open introduce behavior needing additional approval. No acceptance criterion contains illustrative examples. No related-requirements field is used.
 
 Terminology: service = selectable IPTV channel; content position = location on the service's broadcast timeline; live position = current position on that timeline; requested rewind target = position at confirmation minus selected displacement; effective target = requested target adjusted for historical availability as agreed in OQ-12. Playback success requires actual presentation, not merely request acceptance. Timing accuracy, latency, tolerances and measurable limits are deferred to NFR. No implementation protocol beyond the assignment's MPEG-TS over RTP and REST is selected here.
 
@@ -52,8 +52,6 @@ The viewer-facing application shall present the available IPTV services in a sel
 
 **Parent Requirement:** HLR-01
 
-**Review status:** Proposed — OQ-17
-
 **Requirement Statement**
 
 The receiver shall reconcile repeated successful catalogue retrievals with the installed IPTV services without creating duplicate service entries.
@@ -65,7 +63,23 @@ A valid catalogue response has been obtained.
 **Acceptance Criteria**
 
 - Repeated retrieval of unchanged data does not create duplicates.
-- Successfully retrieved changes are reflected in the installed catalogue.
+- Successfully retrieved additions and updates are reflected in the installed catalogue.
+- Removal of absent services is performed only for a valid complete catalogue; removal policy is pending confirmation (OQ-36).
+
+### FR-01.05 — Catalogue Refresh
+
+**Parent Requirement:** HLR-01
+
+**Requirement Statement**
+
+The receiver shall trigger catalogue retrieval at receiver startup and periodically while operating, at a 24-hour refresh interval.
+
+**Acceptance Criteria**
+
+- Startup triggers a catalogue refresh.
+- A running receiver requests a refresh every 24 hours.
+- Refresh failures follow the metadata failure policy.
+
 
 ## HLR-02 — Live TV Service Selection
 
@@ -79,11 +93,12 @@ The system shall allow the viewer to select the next service in the service orde
 
 **Preconditions**
 
-A current service and a successor exist.
+A current service exists and the service list is nonempty.
 
 **Acceptance Criteria**
 
-- The selected service is the successor of the current service according to the service order.
+- The selected service is the next service in ascending channel-number order.
+- Navigation from the last service selects the first.
 
 ### FR-02.02 — Previous Service Selection
 
@@ -95,11 +110,12 @@ The system shall allow the viewer to select the previous service in the service 
 
 **Preconditions**
 
-A current service and a predecessor exist.
+A current service exists and the service list is nonempty.
 
 **Acceptance Criteria**
 
-- The selected service is the predecessor of the current service according to the service order.
+- The selected service is the previous service in ascending channel-number order.
+- Navigation from the first service selects the last.
 
 ### FR-02.03 — Direct Channel Number Selection
 
@@ -107,11 +123,12 @@ A current service and a predecessor exist.
 
 **Requirement Statement**
 
-The system shall allow the viewer to select a service by entering its channel number.
+The system shall allow the viewer to select a service by entering its channel number and confirming with Enter.
 
 **Acceptance Criteria**
 
-- A valid entered number resolves to the corresponding service.
+- A valid confirmed number resolves to the corresponding service.
+- Unconfirmed numeric input does not change service.
 
 ### FR-02.04 — Service List Selection
 
@@ -148,14 +165,13 @@ The viewer-facing application shall display a service information dialog when th
 
 **Acceptance Criteria**
 
-- The dialog identifies the selected service using its catalogue information.
+- The dialog displays the selected channel number, service name and current programme title if available.
+- The dialog dismisses automatically or on user dismissal; its automatic display duration is deferred to NFR.
 - Information for the previous service is not presented as belonging to the new service.
 
 ### FR-02.07 — Superseding Service Selection
 
 **Parent Requirement:** HLR-02
-
-**Review status:** Proposed — OQ-20
 
 **Requirement Statement**
 
@@ -169,6 +185,37 @@ A service activation is pending.
 
 - After successive valid selections, only the latest selection can become the active service.
 - An obsolete completion cannot replace it.
+
+### FR-02.08 — Initial Service Activation
+
+**Parent Requirement:** HLR-02
+
+**Requirement Statement**
+
+On initial startup with a valid nonempty catalogue, the system shall activate the first available service in channel-number order.
+
+**Preconditions**
+
+A valid nonempty service catalogue is available.
+
+**Acceptance Criteria**
+
+- Initial startup activates the first available service live.
+
+### FR-02.09 — Channel Change Rate Limiting
+
+**Parent Requirement:** HLR-02
+
+**Requirement Statement**
+
+The receiver shall enforce a minimum interval between initiating channel changes.
+
+**Acceptance Criteria**
+
+- Channel activation requests are not initiated closer together than the agreed minimum interval.
+- The latest valid selection remains authoritative; handling of selections received within the interval is pending OQ-37.
+- The interval value is deferred to NFR.
+
 
 ## HLR-03 — Electronic Programme Guide
 
@@ -205,7 +252,7 @@ The viewer-facing application shall allow the viewer to open a TV Guide displayi
 
 **Parent Requirement:** HLR-03
 
-**Review status:** Proposed — OQ-22
+**Review status:** Proposed — OQ-22 (coverage window and fields awaiting confirmation)
 
 **Requirement Statement**
 
@@ -218,6 +265,21 @@ Schedule data is available.
 **Acceptance Criteria**
 
 - Displayed titles and times correspond to the retrieved schedule.
+
+### FR-03.04 — Programme Schedule Refresh
+
+**Parent Requirement:** HLR-03
+
+**Requirement Statement**
+
+The receiver shall trigger EPG refresh at startup and periodically while operating.
+
+**Acceptance Criteria**
+
+- Startup triggers refresh for the applicable EPG scope.
+- Periodic refresh uses an agreed interval within 6–12 hours.
+- The exact interval and scope remain open (OQ-38).
+
 
 ## HLR-04 — User Input and Audio Control
 
@@ -266,6 +328,36 @@ An A/V session is active.
 
 - Muting suppresses audible output.
 - Unmuting restores audible output when the configured volume is nonzero.
+
+### FR-04.04 — Audio Settings Continuity
+
+**Parent Requirement:** HLR-04
+
+**Requirement Statement**
+
+The system shall retain volume and mute settings across service selection, rewind, quality switching and Go Live within the current application session.
+
+**Acceptance Criteria**
+
+- Playback changes do not reset volume or mute.
+- Persistence across restarts is not required.
+
+### FR-04.05 — Keyboard Command Mapping
+
+**Parent Requirement:** HLR-04
+
+**Review status:** Partial — OQ-39
+
+**Requirement Statement**
+
+The viewer-facing application shall support the agreed keyboard mapping in normal viewing and dialog contexts.
+
+**Acceptance Criteria**
+
+- Arrow keys control channel navigation and volume in normal viewing; Enter confirms selections; digits enter a service number; Backspace selects or adds a 30-second rewind step; Space invokes Go Live.
+- Backspace does not execute rewind without explicit confirmation.
+- Exact arrow directions, dialog adjustment and cancellation, and remaining action keys are pending OQ-39.
+
 
 ## HLR-05 — Rewind Control
 
@@ -391,6 +483,7 @@ Earlier content exists but the requested target precedes its availability bounda
 
 - The effective target is the earliest available playable position rather than the unavailable requested position.
 - Playback accuracy is assessed against that effective target.
+- A brief, nonblocking notice informs the viewer that the historical availability boundary was reached.
 
 ### FR-05.09 — Initial Rewind Displacement
 
@@ -416,6 +509,21 @@ The system shall prevent confirmation of another rewind while a previously confi
 
 - A second confirmation cannot initiate another rewind until the previous operation has completed or failed.
 
+### FR-05.11 — No Earlier Playable Content
+
+**Parent Requirement:** HLR-05
+
+**Requirement Statement**
+
+If no earlier playable content exists at confirmation, the system shall not perform an additional rewind.
+
+**Acceptance Criteria**
+
+- The current playback is retained if possible.
+- A brief, nonblocking notice communicates the unavailable rewind.
+- The operation is not falsely reported as successful.
+
+
 ## HLR-06 — Playback Quality Selection
 
 ### FR-06.01 — Available Quality Selection
@@ -428,7 +536,7 @@ The viewer-facing application shall allow the viewer to select an available qual
 
 **Acceptance Criteria**
 
-- The selectable quality options correspond to variants available for that service.
+- Exactly two quality variants are selectable for each configured service in the demonstration; the options correspond to available variants.
 - Quality selection is available during live and rewind playback.
 
 ### FR-06.02 — Quality Change Request
@@ -441,6 +549,8 @@ The receiver shall request playback of the selected service in the newly selecte
 
 **Acceptance Criteria**
 
+- Selecting a different quality initiates the change without an additional confirmation.
+- Selecting the already active quality does not initiate a change.
 - The requested variant corresponds to the selected quality.
 - The service remains unchanged.
 
@@ -470,6 +580,34 @@ The viewer-facing application shall indicate the quality variant actually being 
 - The indicator changes to the requested quality only after actual playback of that variant begins.
 - A pending or failed request is not indicated as successful.
 
+### FR-06.05 — Quality Selection Continuity
+
+**Parent Requirement:** HLR-06
+
+**Requirement Statement**
+
+The system shall retain the active quality across playback operations and service changes when available, otherwise using the defined default quality.
+
+**Acceptance Criteria**
+
+- Rewind and Go Live preserve active quality.
+- A service change preserves quality when available.
+- The default quality is used when no applicable prior selection exists or that quality is unavailable; default selection is pending OQ-40.
+
+### FR-06.06 — Quality Change Failure Recovery
+
+**Parent Requirement:** HLR-06
+
+**Requirement Statement**
+
+Following a failed quality change, the system shall retain or restore the previous quality and content position when feasible.
+
+**Acceptance Criteria**
+
+- A failed change does not falsely update the active quality indicator.
+- If prior playback cannot be restored, the failure is communicated and Go Live remains available.
+
+
 ## HLR-07 — Playback Position and Return to Live
 
 ### FR-07.01 — Live Delay Determination
@@ -482,7 +620,7 @@ The receiver shall determine the delay of presented content relative to the curr
 
 **Acceptance Criteria**
 
-- The delay represents the difference between the live content position and the presented content position on the same timeline.
+- For delayed playback, the delay represents the difference between the current live content position and presented content position on the same timeline. Ordinary transport and decoding latency is not shown as a rewind delay in live mode.
 
 ### FR-07.02 — Live Delay Display
 
@@ -494,7 +632,8 @@ The viewer-facing application shall display a single time indicator representing
 
 **Acceptance Criteria**
 
-- The displayed value corresponds to the determined delay and reflects changes in the playback position.
+- The indicator displays LIVE in live mode and a negative delay in HH:MM:SS format in delayed mode.
+- The delay reflects changes in playback position; update cadence and tolerance are deferred to NFR.
 - It is not an absolute broadcast timestamp.
 
 ### FR-07.03 — Return to Live
@@ -507,7 +646,7 @@ The system shall allow the viewer to return from delayed playback to current liv
 
 **Acceptance Criteria**
 
-- The Go Live action activates current live content of the same service.
+- The Go Live action activates current live content of the same service at the active quality.
 - The delay indicator reflects the resulting live playback position.
 
 ## HLR-08 — Error Reporting and Playback Recovery
@@ -555,8 +694,6 @@ The system shall keep the Go Live action available following a failed rewind.
 
 **Parent Requirement:** HLR-08
 
-**Review status:** Proposed — OQ-19
-
 **Requirement Statement**
 
 The system shall reject a channel number that does not identify an available service without activating an unrelated service.
@@ -567,14 +704,11 @@ A channel number has been submitted.
 
 **Acceptance Criteria**
 
-- Invalid input does not select another service.
-- The viewer is informed of the invalid selection.
+- Invalid confirmed input does not change service or interrupt playback.
 
 ### FR-08.05 — Metadata Failure Handling
 
 **Parent Requirement:** HLR-08
-
-**Review status:** Proposed — OQ-18
 
 **Requirement Statement**
 
@@ -587,7 +721,39 @@ A metadata request fails or returns unusable data.
 **Acceptance Criteria**
 
 - Unavailable or invalid metadata is not presented as newly retrieved valid data.
-- The viewer receives an appropriate indication.
+- Previously valid data is retained with a stale or unavailable indication.
+- If no valid data exists, an empty/error state is displayed.
+- Retry is available.
+
+### FR-08.06 — Playback Operation Priority
+
+**Parent Requirement:** HLR-08
+
+**Requirement Statement**
+
+The system shall prioritize new valid service selection and Go Live commands over pending rewind or quality changes, and prevent new rewind or quality confirmations while a playback transition is pending.
+
+**Acceptance Criteria**
+
+- A new valid zap supersedes a pending zap, rewind or quality change, subject to channel rate limiting.
+- Go Live supersedes pending rewind or quality change; it is not applicable during pending zap.
+- New rewind and quality confirmations cannot start while a playback transition is pending.
+- Obsolete operation completions cannot change the active playback state.
+
+### FR-08.07 — Playback Failure Recovery
+
+**Parent Requirement:** HLR-08
+
+**Requirement Statement**
+
+Following a failed service activation, lost media delivery or unusable transport stream, the system shall retain or restore valid prior playback when feasible, otherwise expose playback unavailability.
+
+**Acceptance Criteria**
+
+- Failed playback is not reported as successful.
+- Valid prior playback is retained or restored when feasible.
+- If playback is unavailable, an error indication and retry or service selection are available.
+
 
 ## HLR-09 — On-Demand Media Delivery
 
@@ -626,6 +792,36 @@ The production side shall expose a progressing simulated live content position f
 **Acceptance Criteria**
 
 - The live position advances with simulated broadcasting independently of an individual viewer starting playback.
+
+### FR-09.10 — Cyclic Scheduled Broadcasting
+
+**Parent Requirement:** HLR-09
+
+**Requirement Statement**
+
+The simulated production side shall broadcast a scheduled sequence of programmes for each service and repeat the sequence after its final programme.
+
+**Acceptance Criteria**
+
+- Programme transitions follow the configured schedule.
+- After the final programme the first programme follows without resetting the service timeline.
+- EPG records correspond to the actual simulated schedule, including repeated occurrences.
+- Service selection does not restart the playlist.
+
+### FR-09.11 — Cross-Programme Historical Playback
+
+**Parent Requirement:** HLR-09
+
+**Requirement Statement**
+
+Historical playback shall follow the service timeline across programme and playlist-cycle boundaries when the relevant content is available.
+
+**Acceptance Criteria**
+
+- Historical playback continues in schedule order across programme and cycle boundaries.
+- Repeated occurrences are distinguishable by their broadcast positions.
+- Historical retention is pending OQ-41.
+
 
 ### FR-09.04 — Live Content Delivery
 
@@ -693,8 +889,6 @@ The RTP streaming server shall communicate inability to satisfy a media request 
 
 **Parent Requirement:** HLR-09
 
-**Review status:** Proposed — OQ-30
-
 **Requirement Statement**
 
 The RTP streaming server shall cease delivery associated with a client playback request when that delivery is no longer required by the client.
@@ -706,6 +900,8 @@ A delivery has been established.
 **Acceptance Criteria**
 
 - A terminated delivery does not continue sending media for the terminated request.
+- Obsolete deliveries are terminated when superseded or released.
+- One independently controlled receiver is sufficient for the demonstration; multi-client support is not mandatory.
 
 ## HLR-10 — Transport Stream Metadata Acquisition
 
@@ -719,7 +915,8 @@ The receiver shall acquire and parse the PAT from the received MPEG-TS using pro
 
 **Acceptance Criteria**
 
-- The parser identifies PAT program entries and their corresponding PMT PIDs from the received stream.
+- The parser identifies all PAT program entries and corresponding PMT PIDs from the received stream.
+- The demonstration media uses SPTS; multi-program playback is not mandatory.
 
 ### FR-10.02 — PMT Acquisition and Parsing
 
@@ -740,12 +937,14 @@ The receiver shall acquire and parse the PMT of the selected program from the re
 
 **Requirement Statement**
 
-The receiver shall make the parsed program component information available to its IPTV playback control logic.
+The receiver shall make the results of its project-owned PAT/PMT parsing independently inspectable for verification. Direct control of demultiplexing or decoder configuration by those results is not required.
 
 **Acceptance Criteria**
 
-- The receiver can access the parsed audio/video component identifiers and timing reference for the selected program.
-- The output corresponds to the received stream independently of a player library's parser.
+- Parsed PAT mappings, PMT PCR PID, elementary stream PIDs and stream types are observable independently of the playback library's parser.
+- Results can be compared with independent inspection of the same received transport stream.
+- Results are used or retained in an inspectable form; the exact evidence mechanism remains for later design.
+
 
 ### FR-10.04 — Invalid Table Handling
 
@@ -771,6 +970,8 @@ The receiver shall acquire program information for each newly activated media st
 **Acceptance Criteria**
 
 - Program information used for the newly activated stream corresponds to that stream after a service, rewind or quality change.
+
+**Specification Note:** Continuous monitoring of table-version changes within an already active stream remains open (OQ-42).
 
 ## HLR-11 — Android TV Integration
 
