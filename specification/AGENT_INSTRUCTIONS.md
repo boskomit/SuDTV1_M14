@@ -1,0 +1,3 @@
+# Agent instructions
+
+This repository currently contains only approved US and HLR requirements. Do not start implementation or invent FR/NFR/TR decisions. Read the requirements, decision log and open questions before proposing changes. Preserve stable IDs and bidirectional traceability. Escalate ambiguities; do not treat deferred items as decisions. Follow the phase gates in the version history. Final deliverables: modular English handoff and a shorter unified human-readable PDF with architecture, signal path, metadata flow, sequence and state diagrams. Design and test specifications are separate. Tests must reference requirements; never claim execution without evidence.
