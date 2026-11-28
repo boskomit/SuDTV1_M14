@@ -18,3 +18,29 @@ Rollback: retain approved snapshots in Git and tag them after team approval. No 
 - Team selected option B for OQ-07 and approved all 11 HLRs without further objections.
 - Updated US-04, HLR-05 and its verification intent; OQ-08 remains deferred.
 - No FR/NFR or lower-level requirements created.
+
+## 0.3.0-dev.1 — Complete FR draft
+- Applied FR pilot feedback and resolved OQ-09 through OQ-16 at functional level.
+- Decomposed all 11 HLRs into 62 proposed FRs; retained original pilot IDs FR-05.01–05.05.
+- Recorded remaining functional questions OQ-17–OQ-35 and retained OQ-08.
+- No HLR wording changed; no NFR, TR, design or test cases authored.
+
+## 0.3.0-dev.2 — FR review revision
+- Incorporated team answers OQ-17–OQ-35, including cyclic scheduled broadcasting, keyboard mapping subset, refresh intervals and independent parser evidence.
+- Expanded to 75 draft FRs with stable existing IDs; remaining ambiguities recorded as OQ-22 and OQ-36–OQ-42.
+- No NFR or TR authored; HLR baseline unchanged.
+
+## 0.3.0-fr — Approved functional baseline (2026-11-28)
+- Applied OQ-22 and OQ-36–OQ-42 resolutions and selected Hybrid RTSP + server-side media seeking after instructor consultation.
+- Finalized all 75 FRs with unchanged identifiers and HLR traceability; sorted requirements within each HLR.
+- Updated project context, agent instructions and open/deferred decision records. No NFR or TR authored; HLR baseline unchanged.
+- Implementation and target platform/library feasibility remain unverified. Combined FR/NFR baseline and PR remain pending NFR review.
+
+## 0.3.0-nfr-dev.1 — Complete NFR draft
+- Added 33 proposed NFRs with HLR/FR traceability, reference conditions, measurement conventions and explicit acceptance criteria.
+- Recorded review questions OQ-43–OQ-52; preserved approved US/HLR/FR unchanged. No TR/design/test cases authored.
+
+## 0.3.0 — Approved FR/NFR baseline
+- Resolved OQ-43–OQ-52. Approved all 33 NFRs, clarified live vs rewind quality switching across US-05, HLR-06, FR-06.03/06.06 and NFR-10/13, and clarified cached EPG coverage.
+- Corrected latency acceptance wording to count all eligible attempts, not just successful ones, as already approved in OQ-43.
+- Preserved all requirement identifiers; implementation feasibility and actual test results remain unverified. TR not started.
