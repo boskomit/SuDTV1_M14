@@ -1,8 +1,8 @@
-# Functional Requirements — Approved FR Baseline 0.3.0-fr
+# Functional Requirements — Approved Baseline 0.3.0
 
-Status: **Approved — 2026-11-28**. Parent: approved HLR baseline v0.2.0. This is the functional baseline; NFR and TR are not yet approved or authored. No acceptance criterion contains illustrative examples. No related-requirements field is used.
+Status: **Approved — 2026-11-28**. Parent: approved HLR baseline v0.2.0. This is the functional baseline, clarified by OQ-45 and OQ-52; NFR is approved in the companion document. TR is not yet authored. No acceptance criterion contains illustrative examples. No related-requirements field is used.
 
-Terminology: service = selectable IPTV channel; content position = location on the service's broadcast timeline; live position = current position on that timeline; requested rewind target = position at confirmation minus selected displacement; effective target = requested target adjusted for historical availability as agreed in OQ-12. Playback success requires actual presentation, not merely request acceptance. Timing accuracy, latency, tolerances and measurable limits are deferred to NFR. The team has selected Hybrid RTSP + server-side media seeking as an architectural constraint: RTSP controls playback, MPEG-TS over RTP carries media, and the server resolves and executes historical seeks. OTT MW REST remains the metadata interface. RTSP version, library choices, PCR/PTS mapping, random-access indexing and exact session mechanics remain for TR/design and feasibility verification.
+Terminology: service = selectable IPTV channel; content position = location on the service's broadcast timeline; live position = current position on that timeline; requested rewind target = position at confirmation minus selected displacement; effective target = requested target adjusted for historical availability as agreed in OQ-12. Playback success requires actual presentation, not merely request acceptance. Timing accuracy, latency, tolerances and measurable limits are specified in the approved NFR document. The team has selected Hybrid RTSP + server-side media seeking as an architectural constraint: RTSP controls playback, MPEG-TS over RTP carries media, and the server resolves and executes historical seeks. OTT MW REST remains the metadata interface. RTSP version, library choices, PCR/PTS mapping, random-access indexing and exact session mechanics remain for TR/design and feasibility verification.
 
 Architecture basis: course lectures 2–7, especially Lecture 7 Figure 2 (Live TV App, TV Input Manager, TV Provider, IPTV TV Input, IPTV client and platform), Lecture 3 PAT/PMT, Lecture 4 managed IPTV media/control separation. Application handles viewer interaction, DTV middleware handles service state and playback control, platform provides media presentation. This is an architectural constraint from course material, not a detailed design or commitment to a particular player, API, language, specific RTSP version or native implementation. Broadcast/OTT example project requirements are not imported into M14.
 
@@ -263,7 +263,7 @@ Schedule data is available.
 **Acceptance Criteria**
 
 - Displayed titles and times correspond to the retrieved schedule.
-- The guide covers the selected service's schedule for the preceding 24 hours and following 24 hours, relative to the current broadcast time.
+- The guide covers the selected service's schedule for the preceding 24 hours and following 24 hours, relative to successful retrieval time; valid cached coverage need not roll forward between refreshes.
 - An empty schedule is indicated to the viewer; EPG browsing does not initiate playback of historical programmes.
 
 ### FR-03.04 — Programme Schedule Refresh
@@ -561,12 +561,14 @@ The receiver shall request playback of the selected service in the newly selecte
 
 **Requirement Statement**
 
-The receiver shall preserve the content position across a quality change in live and rewind playback.
+The receiver shall preserve the playback mode across a quality change. During live playback, the receiver shall resume playback at the current live position. During rewind playback, the receiver shall preserve the content position presented at the moment of quality selection.
 
 **Acceptance Criteria**
 
-- Playback after switching corresponds to the same content timeline and does not return to the live edge solely because of a quality change.
-- Continuity is assessed against a tolerance to be defined in NFR.
+- A quality change during live playback preserves live mode and resumes current live content in accordance with NFR-13; content elapsed during switching may be skipped.
+- A quality change during rewind playback preserves the historical content position within the tolerance in NFR-10.
+- The selected service remains unchanged.
+- A quality change during rewind playback does not implicitly trigger a return to live.
 
 ### FR-06.04 — Active Quality Indication
 
@@ -601,7 +603,7 @@ The system shall retain the active quality across playback operations and servic
 
 **Requirement Statement**
 
-Following a failed quality change, the system shall retain or restore the previous quality and content position when feasible.
+Following a failed quality change, the system shall retain or restore the previous quality and playback mode when feasible, preserving the historical content position in rewind mode and resuming current live content in live mode.
 
 **Acceptance Criteria**
 
@@ -1094,4 +1096,4 @@ The receiver shall expose the required M14 viewer-facing capabilities within the
 
 ## Deferred decisions
 
-See [Open Questions](../management/OPEN_QUESTIONS.md). OQ-08 remains a feasibility check, and NFR/TR implementation choices are deferred. The approved functional behavior must not be weakened to accommodate a library or system application.
+See [Open Questions](../management/OPEN_QUESTIONS.md). OQ-08 remains a feasibility check, and TR implementation choices are deferred. The approved functional behavior must not be weakened to accommodate a library or system application.

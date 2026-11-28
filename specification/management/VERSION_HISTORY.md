@@ -11,3 +11,5 @@ Phase gates: US → HLR → FR/NFR (separate categories) → TR → separate des
 FR milestone: 0.3.0-fr approved on 2026-11-28; combined FR/NFR milestone spec-v0.3.0 remains pending NFR approval and merge. Preserve this milestone in branch history; no tag is claimed created.
 
 NFR draft 0.3.0-nfr-dev.1 follows approved FR milestone; combined baseline and PR remain pending review.
+
+Combined FR/NFR baseline 0.3.0 approved on 2026-11-28. PR to main is pending team merge; tag creation remains pending merge.

@@ -63,3 +63,9 @@
 
 ## NFR draft initiation
 - D-54 (confirmed): Team authorized a complete NFR draft without a separate pilot. All newly proposed numerical targets and scope clarifications require review; no implementation or measured performance is claimed.
+
+## Combined FR/NFR baseline — 2026-11-28
+- D-55 (OQ-43, OQ-44, OQ-46–OQ-51; confirmed): Reference conditions, performance, timing, recovery, stability, parser, usability and architecture targets approved as documented in all 33 NFRs.
+- D-56 (OQ-45; confirmed): Team clarified original intent: live quality switching preserves live mode/current live edge (option B); rewind switching preserves the historical content position at selection within ±2 s. Rewind accuracy ±2 s and media alignment 100 ms retained from the accepted proposal. This clarifies D-08 and FR-06.03; US-05, HLR-06, FR-06.06 and NFR-10/13 are aligned to avoid inconsistent interpretation.
+- D-57 (OQ-52; confirmed): EPG coverage assessed at successful retrieval; valid cache need not continuously extend to rolling +24 h; pre-start schedule does not imply rewind availability.
+- D-58 (confirmed): Combined FR/NFR baseline 0.3.0 approved; 75 FR and 33 NFR IDs retained. No TR or implementation authored; OQ-08 deferred.

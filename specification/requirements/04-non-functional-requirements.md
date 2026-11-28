@@ -1,13 +1,13 @@
-# Non-Functional Requirements — Draft 0.3.0-nfr-dev.1
+# Non-Functional Requirements — Approved Baseline 0.3.0
 
-Status: **Proposed — team review required**. Based on approved US/HLR/FR baseline 0.3.0-fr. No FR wording is changed. All new numeric thresholds and test sample sizes below are proposed engineering targets for the student demonstration, not measured results, instructor mandates or production SLAs. Existing approved refresh/coverage and protocol constraints are restated for verification. No TR/design implementation decisions are made here.
+Status: **Approved — 2026-11-28**. Based on approved US/HLR/FR baseline with OQ-45 and OQ-52 clarifications. Numerical thresholds and test sample sizes are team-approved engineering targets for the student demonstration, not measured results, instructor mandates or production SLAs. Existing approved refresh/coverage and protocol constraints are restated for verification. No TR/design implementation decisions are made here.
 
 ## Reference conditions and measurement conventions
 
 - One Android TV receiver, both project servers reachable on a controlled local IP network (physical or virtual), valid prepared SPTS in High and Low, cyclic scheduled playlist, and documented runtime/host configuration. No deliberate network impairment or competing heavy workload in normal performance tests. Exact hardware, image, media encoding and tools are deferred to TR; record them before testing. Fault tests intentionally depart from these conditions.
-- Use at least two services and content with identifiable timeline markers, independently verified metadata and synchronized A/V cues. Include programme/cycle boundaries and both qualities. This is a proposed verification fixture, not an extra user feature.
+- Use at least two services and content with identifiable timeline markers, independently verified metadata and synchronized A/V cues. Include programme/cycle boundaries and both qualities. This is an approved verification fixture, not an extra user feature.
 - Operation latency starts at the relevant valid user action and ends at actual first presentation of the requested content, not request acknowledgement. A superseded or invalid command is not a successful eligible operation. For each latency sample set, attempt 20 eligible operations; any failed non-superseded attempt counts against the 18/20 target and is also a functional failure under normal reference conditions. Do not discard failures or retry to improve the sample. Use both modes where applicable.
-- Time position accuracy is measured on the common service broadcast timeline with independent content identification, not raw PCR, RTP arrival time, or the same unverified receiver estimate. Effective rewind target includes the approved earliest-available clamp. Quality reference is the presented position at selection, as proposed for review.
+- Time position accuracy is measured on the common service broadcast timeline with independent content identification, not raw PCR, RTP arrival time, or the same unverified receiver estimate. Effective rewind target includes the approved earliest-available clamp. For rewind-mode quality switching, the reference is the presented position at selection. Live-mode quality switching preserves live mode and is evaluated against NFR-13.
 - Stable playback excludes explicitly initiated transitions and fault injection, not unexplained stalls. All thresholds apply to the reference environment only. No results have been measured.
 - Requirements retain stable NFR IDs, parent HLR references and FR traceability (not a Related Requirements field). Acceptance criteria are verification conditions, not illustrative examples or full test cases.
 
@@ -39,7 +39,7 @@ At least 90% of valid channel changes shall begin actual video presentation with
 
 **Acceptance Criteria**
 
-At least 18 of 20 successful eligible selections meet the target; measure from confirmation or navigation command to first frame of the requested service. No superseded selection is counted as a completed change.
+At least 18 of 20 eligible selections meet the target; measure from confirmation or navigation command to first frame of the requested service. No superseded selection is counted as a completed change.
 
 ### NFR-03 — Minimum Channel Change Interval
 
@@ -67,7 +67,7 @@ At least 90% of eligible confirmed rewind operations shall begin presentation of
 
 **Acceptance Criteria**
 
-At least 18 of 20 successful eligible operations meet the target, measured from explicit confirmation to first actual frame of the new playback; selection time is excluded.
+At least 18 of 20 eligible operations meet the target, measured from explicit confirmation to first actual frame of the new playback; selection time is excluded.
 
 ### NFR-05 — Quality Switch Latency
 
@@ -81,7 +81,7 @@ At least 90% of eligible quality changes shall begin presentation of the newly s
 
 **Acceptance Criteria**
 
-At least 18 of 20 successful eligible switches meet the target; measure from quality selection to first frame of the new variant, in both live and rewind modes.
+At least 18 of 20 eligible switches meet the target; measure from quality selection to first frame of the new variant, in both live and rewind modes.
 
 ### NFR-06 — Go Live Completion Latency
 
@@ -95,7 +95,7 @@ At least 90% of eligible Go Live operations shall begin live presentation within
 
 **Acceptance Criteria**
 
-At least 18 of 20 successful eligible operations meet the target, measured from Go Live command to actual live presentation.
+At least 18 of 20 eligible operations meet the target, measured from Go Live command to actual live presentation.
 
 ### NFR-07 — Cached Metadata UI Latency
 
@@ -149,11 +149,11 @@ For each tested eligible rewind, absolute error |actual first presented content 
 
 **Requirement Statement**
 
-The first presented frame of a successfully selected quality shall differ by at most 2 s from the content position presented when the quality selection was made.
+During rewind playback, the first presented video frame after a successful quality change shall differ by no more than 2 s from the content position presented at the moment of quality selection. During live playback, the newly selected quality shall satisfy the live edge accuracy requirement defined by NFR-13.
 
 **Acceptance Criteria**
 
-Measure absolute difference on the shared broadcast timeline in both live and rewind modes; do not add switch interruption duration to the reference. The permitted discontinuity is not permission to return to live during historical playback.
+For rewind mode, measure absolute difference on the shared broadcast timeline without adding switch interruption duration to the reference; the permitted discontinuity does not permit an implicit return to live. For live mode, verify that live mode and LIVE indication are retained after successful switching and evaluate live lag under NFR-13, not against the historical position at selection.
 
 ### NFR-11 — Live Delay Indicator Accuracy
 
@@ -187,7 +187,7 @@ The indicator uses negative HH:MM:SS formatting with one-second resolution; obse
 
 **Parent Requirement:** HLR-02, HLR-07, HLR-09
 
-**Functional Traceability:** FR-02.05, FR-07.03, FR-09.03, FR-09.04
+**Functional Traceability:** FR-02.05, FR-06.03, FR-07.03, FR-09.03, FR-09.04
 
 **Requirement Statement**
 
@@ -395,7 +395,7 @@ The selected-service EPG shall cover the approved preceding and following 24 h s
 
 **Acceptance Criteria**
 
-Compare server-provided schedule and receiver-visible records with independently derived playlist schedule; no missing intersecting entries within the available schedule interval, no wrong-service entries, and correct start/end times. Scheduled pre-start entries, if supplied, do not imply historical playback availability.
+Compare server-provided schedule and receiver-visible records with independently derived playlist schedule; no missing intersecting entries within the available schedule interval, no wrong-service entries, and correct start/end times. Scheduled pre-start entries, if supplied, do not imply historical playback availability. A valid cached schedule need not continuously extend to a fresh rolling +24 h horizon between the approved refreshes.
 
 ## Architecture, interoperability and reproducibility
 
@@ -485,6 +485,6 @@ A compatible server endpoint can be configured without modifying viewer UI or pa
 
 ## Scope exclusions and deferred decisions
 
-No mandatory multi-client load capacity, production uptime SLA, DRM/authentication, public Internet exposure, second platform port, persistent user settings or fixed CPU/RAM/bitrate limits are introduced. The controlled demonstration network is the proposed operating scope, not a security assurance. TR must define compatible media formats, libraries, RTSP version, PCR/PTS and seek mechanism, session cleanup on disconnect, runtime image and resource ownership. OQ-08 remains open. If measurements or feasibility show a proposed/approved target is impractical, seek team approval for a documented revision rather than silently relaxing it.
+No mandatory multi-client load capacity, production uptime SLA, DRM/authentication, public Internet exposure, second platform port, persistent user settings or fixed CPU/RAM/bitrate limits are introduced. The controlled demonstration network is the approved operating scope, not a security assurance. TR must define compatible media formats, libraries, RTSP version, PCR/PTS and seek mechanism, session cleanup on disconnect, runtime image and resource ownership. OQ-08 remains open. If measurements or feasibility show an approved target is impractical, seek team approval for a documented revision rather than silently relaxing it.
 
 Sources: approved FR baseline; original M14 task and instructor project instructions (measurable criteria, layered architecture, signal/metadata paths, asynchronous operations and reproducible verification); course lectures 2–7. The 150 ms A/V skew target is motivated by Lecture 3's approximate perceptual discussion, not a normative course limit. Other new thresholds are engineering proposals.

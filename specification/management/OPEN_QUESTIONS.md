@@ -16,18 +16,8 @@ OQ-01–OQ-07 and OQ-09–OQ-42 are resolved at functional level. Historical dis
 ## Deferred (not FR blockers)
 
 - OQ-08: Verify preferred system Live TV application can expose all mandatory M14 functions; consider project-owned TIF-integrated alternative if feasibility fails, with team approval.
-- NFR: rewind/quality position accuracy, channel activation minimum interval, playback operation timeouts, indicator precision/cadence, info/notice durations and other measurable limits.
 - TR/design: RTSP version and compatible client/server libraries, MP2T support and access to received TS for project parser, seekable live behavior, global timeline mapping, PCR/PTS and random-access point handling, RTP/session transitions, exact media preparation and verification. Hybrid approach is approved but no implementation or PoC is verified.
 
-## NFR review — proposed targets (not approved)
+## NFR review — closed
 
-- OQ-43: Approve reference conditions and measurement convention (single receiver, controlled local IP network, at least two services, 20 attempts per playback latency metric, 18/20 target, no excluded failures)?
-- OQ-44: Approve responsiveness targets: 250 ms UI acknowledgement, 3 s channel change, 500 ms minimum initiation interval, 5 s rewind/quality/Go Live, 1 s cached metadata UI, 5 s metadata deadline?
-- OQ-45: Approve 2 s absolute rewind and quality-position error, measured from effective target and position at quality selection respectively; 100 ms cross-variant media alignment? In live quality switching the selected position is preserved rather than advancing to the live edge; confirm this interpretation if it conflicts with LIVE mode expectations.
-- OQ-46: Approve 2 s delay-indicator error, 1 s update/resolution, 5 s measured live lag after settling, 150 ms A/V skew?
-- OQ-47: Approve 10 s operation deadline, 10 s recovery deadline, 5 s complete-loss detection and 2 s obsolete-delivery termination?
-- OQ-48: Approve 100-operation resource stability and 30-minute continuous playback including programme/cycle boundaries, with no unplanned interruption over 3 s?
-- OQ-49: Approve 2 s parser result availability after complete tables and exact correctness on reference corpus?
-- OQ-50: Approve 3 s info dialog and 2 s nonblocking boundary notice with ±0.5 s tolerance? Confirm failure messages are not subject to the short notice duration.
-- OQ-51: Approve architecture, compatibility, reproducibility and evidence constraints; confirm no fixed CPU/RAM limits, production SLA, authentication/DRM or multi-client capacity requirement for the controlled demo?
-- OQ-52: EPG window is evaluated at successful retrieval time with the approved 6 h refresh. Confirm that a cached schedule need not continuously extend to a fresh rolling +24 h horizon between refreshes, and that pre-start scheduled records (if any) do not imply rewind availability.
+OQ-43–OQ-52 approved on 2026-11-28. OQ-45 selects option B for live quality switching (preserve live mode/current live edge); rewind mode preserves the historical position within ±2 s. The remaining proposed numerical thresholds and reference conditions are approved as written. OQ-52 evaluates EPG coverage at successful retrieval time; valid cached data need not maintain a continuously rolling +24 h horizon. See Decision Log and approved NFR baseline. OQ-08 and technical feasibility remain deferred.
