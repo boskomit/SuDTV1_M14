@@ -9,3 +9,5 @@ Proposed tags after approval/merge: spec-v0.2.0 (HLR), spec-v0.3.0 (FR/NFR), spe
 Phase gates: US → HLR → FR/NFR (separate categories) → TR → separate design/test specifications → final PDF and handoff. Changes to approved requirements require team approval and impact analysis.
 
 FR milestone: 0.3.0-fr approved on 2026-11-28; combined FR/NFR milestone spec-v0.3.0 remains pending NFR approval and merge. Preserve this milestone in branch history; no tag is claimed created.
+
+NFR draft 0.3.0-nfr-dev.1 follows approved FR milestone; combined baseline and PR remain pending review.

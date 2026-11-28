@@ -60,3 +60,6 @@
 - D-51 (OQ-42; confirmed): Team selected Hybrid RTSP + server-side media seeking after consultation with instructor. RTSP control, MPEG-TS over RTP media, REST metadata, server-side seek resolution; specific PCR/PTS/index/library choices and session mechanics deferred to TR. Custom control alternative not selected. No PoC or compatibility verification claimed.
 - D-52 (OQ-42; FR closure): Parse PAT/PMT on each new stream; no mandatory continuous table-version monitoring for stable SPTS; reacquire upon relevant structure changes. Presented position tracking remains required. Completes D-40.
 - D-53 (confirmed): Team authorized closure of FR baseline on 2026-11-28. All 75 FR IDs retained; NFR is next, TR/design/test not authored. OQ-08 deferred, not a waiver of mandatory functionality. Supersedes draft status in D-24.
+
+## NFR draft initiation
+- D-54 (confirmed): Team authorized a complete NFR draft without a separate pilot. All newly proposed numerical targets and scope clarifications require review; no implementation or measured performance is claimed.

@@ -35,3 +35,7 @@ Rollback: retain approved snapshots in Git and tag them after team approval. No 
 - Finalized all 75 FRs with unchanged identifiers and HLR traceability; sorted requirements within each HLR.
 - Updated project context, agent instructions and open/deferred decision records. No NFR or TR authored; HLR baseline unchanged.
 - Implementation and target platform/library feasibility remain unverified. Combined FR/NFR baseline and PR remain pending NFR review.
+
+## 0.3.0-nfr-dev.1 — Complete NFR draft
+- Added 33 proposed NFRs with HLR/FR traceability, reference conditions, measurement conventions and explicit acceptance criteria.
+- Recorded review questions OQ-43–OQ-52; preserved approved US/HLR/FR unchanged. No TR/design/test cases authored.
