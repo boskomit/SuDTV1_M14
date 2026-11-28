@@ -44,3 +44,7 @@ Rollback: retain approved snapshots in Git and tag them after team approval. No 
 - Resolved OQ-43–OQ-52. Approved all 33 NFRs, clarified live vs rewind quality switching across US-05, HLR-06, FR-06.03/06.06 and NFR-10/13, and clarified cached EPG coverage.
 - Corrected latency acceptance wording to count all eligible attempts, not just successful ones, as already approved in OQ-43.
 - Preserved all requirement identifiers; implementation feasibility and actual test results remain unverified. TR not started.
+
+## 0.4.0-dev.1 — Complete TR draft
+- Added 35 technical requirements covering environment, C++ middleware, TIF/JNI, REST/cache, cyclic timeline, RTSP/RTP head-end, seek index, GStreamer, own parser, rendering position, concurrency, recovery and verification gates.
+- Recorded OQ-53–55; no US/HLR/FR/NFR wording modified. No implementation, detailed design or test cases authored.

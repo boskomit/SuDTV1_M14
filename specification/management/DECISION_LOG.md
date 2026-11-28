@@ -69,3 +69,9 @@
 - D-56 (OQ-45; confirmed): Team clarified original intent: live quality switching preserves live mode/current live edge (option B); rewind switching preserves the historical content position at selection within ±2 s. Rewind accuracy ±2 s and media alignment 100 ms retained from the accepted proposal. This clarifies D-08 and FR-06.03; US-05, HLR-06, FR-06.06 and NFR-10/13 are aligned to avoid inconsistent interpretation.
 - D-57 (OQ-52; confirmed): EPG coverage assessed at successful retrieval; valid cache need not continuously extend to rolling +24 h; pre-start schedule does not imply rewind availability.
 - D-58 (confirmed): Combined FR/NFR baseline 0.3.0 approved; 75 FR and 33 NFR IDs retained. No TR or implementation authored; OQ-08 deferred.
+
+## TR draft — 0.4.0-dev.1
+- D-59 (confirmed): Team authorized TR phase, delegated most engineering choices and explicitly mandated C++ middleware and Android TV + TIF.
+- D-60 (proposed): C++17 native core, Java/JNI TIF adapter, GStreamer media platform, C++ streaming server, Python FastAPI metadata server; exact versions subject to feasibility.
+- D-61 (proposed): RTSP 1.0 TCP control and UDP unicast MP2T RTP; per-operation RTSP resource URI and new session, server-side indexed PTS/random-access seek; read-only timing anchor metadata; OQ-53.
+- D-62 (proposed): System app preferred; documented feasibility gate and conditional TvView fallback; OQ-54. C++ scope clarification OQ-55.

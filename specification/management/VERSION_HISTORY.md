@@ -13,3 +13,5 @@ FR milestone: 0.3.0-fr approved on 2026-11-28; combined FR/NFR milestone spec-v0
 NFR draft 0.3.0-nfr-dev.1 follows approved FR milestone; combined baseline and PR remain pending review.
 
 Combined FR/NFR baseline 0.3.0 approved on 2026-11-28. PR to main is pending team merge; tag creation remains pending merge.
+
+TR draft 0.4.0-dev.1 on spec/tr based on merged 0.3.0 main. TR baseline/PR pending team review; no tag claimed.

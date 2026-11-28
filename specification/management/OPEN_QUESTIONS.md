@@ -21,3 +21,9 @@ OQ-01–OQ-07 and OQ-09–OQ-42 are resolved at functional level. Historical dis
 ## NFR review — closed
 
 OQ-43–OQ-52 approved on 2026-11-28. OQ-45 selects option B for live quality switching (preserve live mode/current live edge); rewind mode preserves the historical position within ±2 s. The remaining proposed numerical thresholds and reference conditions are approved as written. OQ-52 evaluates EPG coverage at successful retrieval time; valid cached data need not maintain a continuously rolling +24 h horizon. See Decision Log and approved NFR baseline. OQ-08 and technical feasibility remain deferred.
+
+## TR review — open
+- OQ-53: Approve new RTSP presentation resource per seek/quality/live operation with project-specific target URI, standard RTSP session control, no mandatory in-session global NPT Range. Recommended yes.
+- OQ-54: Pre-authorize project-owned TIF-integrated TvView app if documented system app feasibility fails (OQ-08). Recommended yes; until approved existing conditional decision applies.
+- OQ-55: C++ requirement applies to receiver middleware; independent OTT MW REST server may be Python FastAPI. Recommended yes.
+- Feasibility gates: Android TV image, system app custom controls, GStreamer ABI/plugins and MP2T, actual render timestamp observation, server remux/anchor and cross-programme continuity. All NOT EXECUTED.
