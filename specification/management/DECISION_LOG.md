@@ -48,3 +48,15 @@
 - D-41 (OQ-33; Resolved): Retain/restore prior playback where feasible; otherwise unavailable, error and retry/service selection. Timeout in NFR.
 - D-42 (OQ-34; Resolved as constraint): All M14 functions remain mandatory; OQ-08 feasibility remains deferred.
 - D-43 (OQ-35; Partial): Arrows channel/volume, Enter confirmation, Backspace adds 30-second rewind step, digits select services, Space Go Live. Remaining mapping pending.
+
+## FR baseline approval — 2026-11-28
+- D-44 (OQ-22; confirmed): Selected-service EPG covers preceding and following 24 hours, with programme titles and start/end times; empty state; no direct EPG historical playback requirement.
+- D-45 (OQ-36; confirmed): Reconcile additions, updates and removals after valid complete catalogue; manual refresh optional. Resolves D-25 catalogue scope.
+- D-46 (OQ-37; confirmed): Retain latest valid selection during minimum channel-change interval and execute at expiry. Interval deferred to NFR. Completes D-28.
+- D-47 (OQ-38; confirmed): Six-hour EPG refresh; startup and missing/stale selected-service data on selection. Completes D-25.
+- D-48 (OQ-39; confirmed): Complete keyboard mapping from review, including dialog navigation and Space in normal viewing only. See FR-04.05. Completes D-43.
+- D-49 (OQ-40; confirmed): High and Low labels, High default, Low fallback. Completes D-32.
+- D-50 (OQ-41; confirmed): All simulated broadcast history since startup available, no additional retention cap. Completes D-37.
+- D-51 (OQ-42; confirmed): Team selected Hybrid RTSP + server-side media seeking after consultation with instructor. RTSP control, MPEG-TS over RTP media, REST metadata, server-side seek resolution; specific PCR/PTS/index/library choices and session mechanics deferred to TR. Custom control alternative not selected. No PoC or compatibility verification claimed.
+- D-52 (OQ-42; FR closure): Parse PAT/PMT on each new stream; no mandatory continuous table-version monitoring for stable SPTS; reacquire upon relevant structure changes. Presented position tracking remains required. Completes D-40.
+- D-53 (confirmed): Team authorized closure of FR baseline on 2026-11-28. All 75 FR IDs retained; NFR is next, TR/design/test not authored. OQ-08 deferred, not a waiver of mandatory functionality. Supersedes draft status in D-24.

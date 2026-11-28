@@ -1,10 +1,10 @@
-# Functional Requirements — Draft 0.3.0-dev.2
+# Functional Requirements — Approved FR Baseline 0.3.0-fr
 
-Status: **Proposed — team review required**. Parent: approved HLR baseline v0.2.0. All statements in this document are draft requirements; entries marked Proposed or Open introduce behavior needing additional approval. No acceptance criterion contains illustrative examples. No related-requirements field is used.
+Status: **Approved — 2026-11-28**. Parent: approved HLR baseline v0.2.0. This is the functional baseline; NFR and TR are not yet approved or authored. No acceptance criterion contains illustrative examples. No related-requirements field is used.
 
-Terminology: service = selectable IPTV channel; content position = location on the service's broadcast timeline; live position = current position on that timeline; requested rewind target = position at confirmation minus selected displacement; effective target = requested target adjusted for historical availability as agreed in OQ-12. Playback success requires actual presentation, not merely request acceptance. Timing accuracy, latency, tolerances and measurable limits are deferred to NFR. No implementation protocol beyond the assignment's MPEG-TS over RTP and REST is selected here.
+Terminology: service = selectable IPTV channel; content position = location on the service's broadcast timeline; live position = current position on that timeline; requested rewind target = position at confirmation minus selected displacement; effective target = requested target adjusted for historical availability as agreed in OQ-12. Playback success requires actual presentation, not merely request acceptance. Timing accuracy, latency, tolerances and measurable limits are deferred to NFR. The team has selected Hybrid RTSP + server-side media seeking as an architectural constraint: RTSP controls playback, MPEG-TS over RTP carries media, and the server resolves and executes historical seeks. OTT MW REST remains the metadata interface. RTSP version, library choices, PCR/PTS mapping, random-access indexing and exact session mechanics remain for TR/design and feasibility verification.
 
-Architecture basis: course lectures 2–7, especially Lecture 7 Figure 2 (Live TV App, TV Input Manager, TV Provider, IPTV TV Input, IPTV client and platform), Lecture 3 PAT/PMT, Lecture 4 managed IPTV media/control separation. Application handles viewer interaction, DTV middleware handles service state and playback control, platform provides media presentation. This is an architectural constraint from course material, not a detailed design or commitment to a particular player, API, language, transport control protocol or native implementation. Broadcast/OTT example project requirements are not imported into M14.
+Architecture basis: course lectures 2–7, especially Lecture 7 Figure 2 (Live TV App, TV Input Manager, TV Provider, IPTV TV Input, IPTV client and platform), Lecture 3 PAT/PMT, Lecture 4 managed IPTV media/control separation. Application handles viewer interaction, DTV middleware handles service state and playback control, platform provides media presentation. This is an architectural constraint from course material, not a detailed design or commitment to a particular player, API, language, specific RTSP version or native implementation. Broadcast/OTT example project requirements are not imported into M14.
 
 
 ## HLR-01 — TV Service Catalogue
@@ -64,7 +64,7 @@ A valid catalogue response has been obtained.
 
 - Repeated retrieval of unchanged data does not create duplicates.
 - Successfully retrieved additions and updates are reflected in the installed catalogue.
-- Removal of absent services is performed only for a valid complete catalogue; removal policy is pending confirmation (OQ-36).
+- Services absent from a valid complete catalogue are removed; incomplete or failed responses do not trigger removals. Manual refresh is optional, not mandatory.
 
 ### FR-01.05 — Catalogue Refresh
 
@@ -213,7 +213,7 @@ The receiver shall enforce a minimum interval between initiating channel changes
 **Acceptance Criteria**
 
 - Channel activation requests are not initiated closer together than the agreed minimum interval.
-- The latest valid selection remains authoritative; handling of selections received within the interval is pending OQ-37.
+- During the minimum interval, retain only the latest valid selection and initiate it when the interval expires; superseded selections are not executed.
 - The interval value is deferred to NFR.
 
 
@@ -252,8 +252,6 @@ The viewer-facing application shall allow the viewer to open a TV Guide displayi
 
 **Parent Requirement:** HLR-03
 
-**Review status:** Proposed — OQ-22 (coverage window and fields awaiting confirmation)
-
 **Requirement Statement**
 
 The TV Guide shall present the programme title and scheduled start and end times for each displayed programme.
@@ -265,6 +263,8 @@ Schedule data is available.
 **Acceptance Criteria**
 
 - Displayed titles and times correspond to the retrieved schedule.
+- The guide covers the selected service's schedule for the preceding 24 hours and following 24 hours, relative to the current broadcast time.
+- An empty schedule is indicated to the viewer; EPG browsing does not initiate playback of historical programmes.
 
 ### FR-03.04 — Programme Schedule Refresh
 
@@ -276,9 +276,10 @@ The receiver shall trigger EPG refresh at startup and periodically while operati
 
 **Acceptance Criteria**
 
-- Startup triggers refresh for the applicable EPG scope.
-- Periodic refresh uses an agreed interval within 6–12 hours.
-- The exact interval and scope remain open (OQ-38).
+- Startup triggers refresh for the selected service once it is known.
+- The selected service's EPG is refreshed every 6 hours while operating.
+- Service selection triggers retrieval when that service's schedule is missing or stale; valid cached data may be reused.
+- Prefetching every service's EPG is not required.
 
 
 ## HLR-04 — User Input and Audio Control
@@ -346,17 +347,17 @@ The system shall retain volume and mute settings across service selection, rewin
 
 **Parent Requirement:** HLR-04
 
-**Review status:** Partial — OQ-39
-
 **Requirement Statement**
 
 The viewer-facing application shall support the agreed keyboard mapping in normal viewing and dialog contexts.
 
 **Acceptance Criteria**
 
-- Arrow keys control channel navigation and volume in normal viewing; Enter confirms selections; digits enter a service number; Backspace selects or adds a 30-second rewind step; Space invokes Go Live.
-- Backspace does not execute rewind without explicit confirmation.
-- Exact arrow directions, dialog adjustment and cancellation, and remaining action keys are pending OQ-39.
+- In normal viewing: Up/Down select next/previous service; Right/Left increase/decrease volume; digits enter a service number; Enter confirms; Space invokes Go Live; M toggles mute; G opens the guide; Q opens quality selection; L opens the service list; I opens service information.
+- The first Backspace opens rewind selection at 30 seconds; subsequent Backspace presses add 30 seconds without executing rewind.
+- In rewind selection, Left adds 30 seconds, Right subtracts 30 seconds down to the minimum, Enter confirms and Esc cancels.
+- In other dialogs, arrows navigate options, Enter activates the focused option and Esc closes or cancels the dialog; normal viewing arrow actions do not apply while a dialog has focus.
+- Space invokes Go Live only in normal viewing; no mouse is needed.
 
 
 ## HLR-05 — Rewind Control
@@ -592,7 +593,7 @@ The system shall retain the active quality across playback operations and servic
 
 - Rewind and Go Live preserve active quality.
 - A service change preserves quality when available.
-- The default quality is used when no applicable prior selection exists or that quality is unavailable; default selection is pending OQ-40.
+- The two quality labels are High and Low; High is the initial default, with Low as fallback if High is unavailable.
 
 ### FR-06.06 — Quality Change Failure Recovery
 
@@ -793,36 +794,6 @@ The production side shall expose a progressing simulated live content position f
 
 - The live position advances with simulated broadcasting independently of an individual viewer starting playback.
 
-### FR-09.10 — Cyclic Scheduled Broadcasting
-
-**Parent Requirement:** HLR-09
-
-**Requirement Statement**
-
-The simulated production side shall broadcast a scheduled sequence of programmes for each service and repeat the sequence after its final programme.
-
-**Acceptance Criteria**
-
-- Programme transitions follow the configured schedule.
-- After the final programme the first programme follows without resetting the service timeline.
-- EPG records correspond to the actual simulated schedule, including repeated occurrences.
-- Service selection does not restart the playlist.
-
-### FR-09.11 — Cross-Programme Historical Playback
-
-**Parent Requirement:** HLR-09
-
-**Requirement Statement**
-
-Historical playback shall follow the service timeline across programme and playlist-cycle boundaries when the relevant content is available.
-
-**Acceptance Criteria**
-
-- Historical playback continues in schedule order across programme and cycle boundaries.
-- Repeated occurrences are distinguishable by their broadcast positions.
-- Historical retention is pending OQ-41.
-
-
 ### FR-09.04 — Live Content Delivery
 
 **Parent Requirement:** HLR-09
@@ -903,6 +874,36 @@ A delivery has been established.
 - Obsolete deliveries are terminated when superseded or released.
 - One independently controlled receiver is sufficient for the demonstration; multi-client support is not mandatory.
 
+### FR-09.10 — Cyclic Scheduled Broadcasting
+
+**Parent Requirement:** HLR-09
+
+**Requirement Statement**
+
+The simulated production side shall broadcast a scheduled sequence of programmes for each service and repeat the sequence after its final programme.
+
+**Acceptance Criteria**
+
+- Programme transitions follow the configured schedule.
+- After the final programme the first programme follows without resetting the service timeline.
+- EPG records correspond to the actual simulated schedule, including repeated occurrences.
+- Service selection does not restart the playlist.
+
+### FR-09.11 — Cross-Programme Historical Playback
+
+**Parent Requirement:** HLR-09
+
+**Requirement Statement**
+
+Historical playback shall follow the service timeline across programme and playlist-cycle boundaries when the relevant content is available.
+
+**Acceptance Criteria**
+
+- Historical playback continues in schedule order across programme and cycle boundaries.
+- Repeated occurrences are distinguishable by their broadcast positions.
+- All simulated content broadcast since server startup remains available for historical playback in the demonstration, subject to media availability; pre-start and future content are not historical content. No additional retention cap is required.
+
+
 ## HLR-10 — Transport Stream Metadata Acquisition
 
 ### FR-10.01 — PAT Acquisition and Parsing
@@ -969,9 +970,10 @@ The receiver shall acquire program information for each newly activated media st
 
 **Acceptance Criteria**
 
-- Program information used for the newly activated stream corresponds to that stream after a service, rewind or quality change.
+- Project-owned PAT/PMT parsing is performed on every newly activated stream, including service changes, rewind, quality changes and Go Live.
+- If program structure changes at a programme or cycle boundary, program information is reacquired before relying on it; stable demonstration SPTS does not require continuous table-version monitoring.
 
-**Specification Note:** Continuous monitoring of table-version changes within an already active stream remains open (OQ-42).
+**Specification Note:** Continuous tracking of presented content position is required independently of PAT/PMT monitoring. PCR extraction, timeline correlation and the server-side seek mechanism are deferred to TR.
 
 ## HLR-11 — Android TV Integration
 
@@ -1090,6 +1092,6 @@ The receiver shall expose the required M14 viewer-facing capabilities within the
 - All approved user-facing functions are demonstrable in the target TV environment through TIF integration.
 - A project-owned application is considered only if the preferred system application fails feasibility verification.
 
-## Open decisions
+## Deferred decisions
 
-See [Open Questions](../management/OPEN_QUESTIONS.md). Draft behavior subject to an unresolved decision must not be treated as approved. No NFR or TR baseline is established.
+See [Open Questions](../management/OPEN_QUESTIONS.md). OQ-08 remains a feasibility check, and NFR/TR implementation choices are deferred. The approved functional behavior must not be weakened to accommodate a library or system application.

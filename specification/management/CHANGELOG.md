@@ -29,3 +29,9 @@ Rollback: retain approved snapshots in Git and tag them after team approval. No 
 - Incorporated team answers OQ-17–OQ-35, including cyclic scheduled broadcasting, keyboard mapping subset, refresh intervals and independent parser evidence.
 - Expanded to 75 draft FRs with stable existing IDs; remaining ambiguities recorded as OQ-22 and OQ-36–OQ-42.
 - No NFR or TR authored; HLR baseline unchanged.
+
+## 0.3.0-fr — Approved functional baseline (2026-11-28)
+- Applied OQ-22 and OQ-36–OQ-42 resolutions and selected Hybrid RTSP + server-side media seeking after instructor consultation.
+- Finalized all 75 FRs with unchanged identifiers and HLR traceability; sorted requirements within each HLR.
+- Updated project context, agent instructions and open/deferred decision records. No NFR or TR authored; HLR baseline unchanged.
+- Implementation and target platform/library feasibility remain unverified. Combined FR/NFR baseline and PR remain pending NFR review.
